@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/image-picker.css">
+    <script src="/public/js/jquery-1.12.4.min.js"></script>
+    <script src="/public/js/image-picker.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <div class="text-center" style="padding-bottom: 20px;">
+                <button type="button" class="btn btn-primary select">选择</button>
+                <button type="button" class="btn btn-primary delete">删除</button>
+            </div>
+            <select class="image-picker" style="display: none;">
+                {%for item in results%}
+                <option data-img-src="{{item.url}}" value="{{item.name}}">{{item.name}}</option>
+                {%endfor%}
+        </select>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript">
+    jQuery("select.image-picker").imagepicker({
+        hide_select: false,
+    });
+    $(document).ready(function() {
+        $(".select").click(function() {
+            window.location.href = "/adminSelectImg/" + $(".image-picker").val() + "/" + callback;
+        });
+        $(".delete").click(function() {
+            window.lobcation.href = "/adminDeleteImg/" + $(".image-picker").val();
+        });
+    });
+</script>
+
+</html>

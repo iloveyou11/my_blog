@@ -1,0 +1,79 @@
+{% extends 'layout.html' %} {% block main %}
+
+<ol class="breadcrumb">
+    <li><a href="/">管理首页</a></li>
+    <li><span>内容修改</span></li>
+</ol>
+
+<h3>内容修改 - {{content.title}}</h3>
+
+<form role="form" method="post">
+    <div class="form-group">
+        <label for="title">分类：</label>
+        <select name="category" id="category" class="form-control">
+            {%for category in categories%}
+            {%if content.category._id.toString() == category._id.toString()%}
+            <option value="{{category.id}}" selected>{{category.name}}</option>
+            {%else%}
+            <option value="{{category.id}}">{{category.name}}</option>
+            {%endif%}
+            {%endfor%}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="title">标题：</label>
+        <input type="text" value="{{content.title}}" class="form-control" id="title" placeholder="请输入内容标题" name="title">
+    </div>
+
+    <div class="form-group">
+        <label for="description">简介：</label>
+        <textarea name="description" id="description" class="form-control" rows="5" placeholder="请输入内容简介">{{content.description}}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="content">内容：</label>
+        <button onclick="editContent" style="margin:10px" class="btn btn-sm btn-info">修改</button>
+        <textarea id="content" name="content">
+            {% autoescape true %}
+                {{ content.content }}
+            {% endautoescape %}
+        </textarea>
+    </div>
+</form>
+
+<!-- ckeditor -->
+<script src="/public/ckeditor/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('content', {
+        language: 'zh-CN', //改成中文版
+        height: 550
+    });
+</script>
+
+<script>
+    function editContent() {
+        let data = [{
+            category: $("#category").find("option:selected").text(),
+            title: $("#title").text(),
+            description: $("#description").text(),
+            content: $("#content").text()
+        }]
+        $.ajax({
+            type: 'POST',
+            url: '/admin/content/edit',
+            data: JSON.stringify(data),
+            success: success,
+            dataType: dataType
+        });
+    }
+</script>
+<!-- <script type="text/javascript" charset="utf-8" src="/public/ueditor/dist/utf8-php/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/public/ueditor/dist/utf8-php/ueditor.all.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/public/ueditor/dist/utf8-php/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+    var ue = UE.getEditor('content');
+</script> -->
+
+
+{% endblock %}
